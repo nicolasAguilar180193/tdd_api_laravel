@@ -30,7 +30,7 @@ class ListArticlesTest extends TestCase
                     'slug' => $article->slug,
                     'content' => $article->content
                 ],
-                'link' => [
+                'links' => [
                     'self' => route('api.v1.articles.show', $article)
                 ]
             ]
@@ -54,7 +54,7 @@ class ListArticlesTest extends TestCase
                         'slug' => $articles[0]->slug,
                         'content' => $articles[0]->content
                     ],
-                    'link' => [
+                    'links' => [
                         'self' => route('api.v1.articles.show', $articles[0])
                     ]
                 ],
@@ -66,7 +66,7 @@ class ListArticlesTest extends TestCase
                         'slug' => $articles[1]->slug,
                         'content' => $articles[1]->content
                     ],
-                    'link' => [
+                    'links' => [
                         'self' => route('api.v1.articles.show', $articles[1])
                     ]
                 ],
@@ -78,7 +78,7 @@ class ListArticlesTest extends TestCase
                         'slug' => $articles[2]->slug,
                         'content' => $articles[2]->content
                     ],
-                    'link' => [
+                    'links' => [
                         'self' => route('api.v1.articles.show', $articles[2])
                     ]
                 ]
