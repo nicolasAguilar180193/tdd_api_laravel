@@ -53,4 +53,86 @@ class CreateArticleTest extends TestCase
             ]
         ]);
     }
+
+    /** @test */
+    public function title_is_required(): void
+    {
+        $response = $this->postJson(route('api.v1.articles.store'), [
+            'data' => [
+                'type' => 'articles',
+                'attributes' => [
+                    'slug' => 'my-new-article',
+                    'content' => 'My new article content'
+                ]
+            ]
+        ]);
+        
+        $response->assertJsonValidationErrors('data.attributes.title');
+    }
+
+    /** @test */
+    public function slug_is_required(): void
+    {
+        $response = $this->postJson(route('api.v1.articles.store'), [
+            'data' => [
+                'type' => 'articles',
+                'attributes' => [
+                    'title' => 'My new article',
+                    'content' => 'My new article content'
+                ]
+            ]
+        ]);
+        
+        $response->assertJsonValidationErrors('data.attributes.slug');
+    }
+
+    /** @test */
+    public function content_is_required(): void
+    {
+        $response = $this->postJson(route('api.v1.articles.store'), [
+            'data' => [
+                'type' => 'articles',
+                'attributes' => [
+                    'title' => 'My new article',
+                    'slug' => 'my-new-article',
+                ]
+            ]
+        ]);
+        
+        $response->assertJsonValidationErrors('data.attributes.content');
+    }
+
+    /** @test */
+    public function content_must_be_a_string(): void
+    {
+        $response = $this->postJson(route('api.v1.articles.store'), [
+            'data' => [
+                'type' => 'articles',
+                'attributes' => [
+                    'title' => 'My new article',
+                    'slug' => 'my-new-article',
+                    'content' => 123
+                ]
+            ]
+        ]);
+        
+        $response->assertJsonValidationErrors('data.attributes.content');
+    }
+
+    /** @test */
+    public function title_must_be_at_least_3_characters(): void
+    {
+        $response = $this->postJson(route('api.v1.articles.store'), [
+            'data' => [
+                'type' => 'articles',
+                'attributes' => [
+                    'title' => 'ab',
+                    'slug' => 'my-new-article',
+                    'content' => 'My new article content'
+                ]
+            ]
+        ]);
+        
+        $response->assertJsonValidationErrors('data.attributes.title');
+    }
 }
