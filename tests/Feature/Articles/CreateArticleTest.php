@@ -4,6 +4,7 @@ namespace Tests\Feature\Articles;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 use App\Models\Article;
 
@@ -17,7 +18,7 @@ class CreateArticleTest extends TestCase
     public function can_create_article(): void
     {
         $this->withoutExceptionHandling();
-
+        
         $response = $this->postJson(route('api.v1.articles.store'), [
             'data' => [
                 'type' => 'articles',
@@ -67,7 +68,7 @@ class CreateArticleTest extends TestCase
             ]
         ]);
         
-        $response->assertJsonValidationErrors('data.attributes.title');
+        $response->assertJsonApiValidationErrors('title');
     }
 
     /** @test */
@@ -83,7 +84,7 @@ class CreateArticleTest extends TestCase
             ]
         ]);
         
-        $response->assertJsonValidationErrors('data.attributes.slug');
+        $response->assertJsonApiValidationErrors('slug');
     }
 
     /** @test */
@@ -99,7 +100,7 @@ class CreateArticleTest extends TestCase
             ]
         ]);
         
-        $response->assertJsonValidationErrors('data.attributes.content');
+        $response->assertJsonApiValidationErrors('content');
     }
 
     /** @test */
@@ -116,7 +117,7 @@ class CreateArticleTest extends TestCase
             ]
         ]);
         
-        $response->assertJsonValidationErrors('data.attributes.content');
+        $response->assertJsonApiValidationErrors('content');
     }
 
     /** @test */
@@ -133,6 +134,8 @@ class CreateArticleTest extends TestCase
             ]
         ]);
         
-        $response->assertJsonValidationErrors('data.attributes.title');
+        $response->assertJsonApiValidationErrors('title');
     }
+
+
 }

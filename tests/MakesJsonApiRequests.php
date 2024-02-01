@@ -2,8 +2,67 @@
 
 namespace Tests;
 
+use Closure;
+use Illuminate\Testing\TestResponse;
+use PHPUnit\Framework\Assert as PHPUnit;
+use PHPUnit\Framework\ExpectationFailedException;
+
 trait MakesJsonApiRequests
 {
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        TestResponse::macro(
+            'assertJsonApiValidationErrors',
+            $this->assertJsonApiValidationErrors()
+        );
+    }
+
+    protected function assertJsonApiValidationErrors(): Closure
+    {
+        return function ($attribute) {
+            /** @var TestResponse $this */
+
+            try {
+
+                $this->assertJsonFragment([
+                    'source' => ['pointer' => "/data/attributes/{$attribute}"]
+                ]);
+                
+            } catch (ExpectationFailedException $e) {
+                PHPUnit::fail(
+                    "Faild to find a JSON:API validation error for key: {$attribute}."
+                    .PHP_EOL.PHP_EOL.
+                    $e->getMessage()
+                );
+            }
+
+
+            try {
+                $this->assertJsonStructure([
+                    'errors' => [
+                        ['title', 'detail', 'source' => ['pointer']]
+                    ]
+                ]);
+            } catch (ExpectationFailedException $e) {
+                PHPUnit::fail(
+                    "Faild to find a valid JSON:API errors response"
+                    .PHP_EOL.PHP_EOL.
+                    $e->getMessage()
+                );
+            }     
+            
+            $this->assertHeader(
+                'Content-Type', 'application/vnd.api+json'
+            );
+
+            $this->assertStatus(422);
+        };
+    }
+
+
 	public function json($method, $uri, array $data = [], array $headers = [], $options = 0)
     {
         $headers['Accept'] = 'application/vnd.api+json';
