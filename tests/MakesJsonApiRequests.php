@@ -6,10 +6,10 @@ use Closure;
 use Illuminate\Testing\TestResponse;
 use PHPUnit\Framework\Assert as PHPUnit;
 use PHPUnit\Framework\ExpectationFailedException;
+use Illuminate\Support\Str;
 
 trait MakesJsonApiRequests
 {
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -23,12 +23,15 @@ trait MakesJsonApiRequests
     protected function assertJsonApiValidationErrors(): Closure
     {
         return function ($attribute) {
-            /** @var TestResponse $this */
+            /** @var TestResponse $this */            
+
+            $pointer = Str::of($attribute)->startsWith('data') 
+                ? "/".str_replace('.', '/', $attribute)
+                : "/data/attributes/{$attribute}";
 
             try {
-
                 $this->assertJsonFragment([
-                    'source' => ['pointer' => "/data/attributes/{$attribute}"]
+                    'source' => ['pointer' => $pointer]
                 ]);
                 
             } catch (ExpectationFailedException $e) {
@@ -38,7 +41,6 @@ trait MakesJsonApiRequests
                     $e->getMessage()
                 );
             }
-
 
             try {
                 $this->assertJsonStructure([
@@ -61,7 +63,6 @@ trait MakesJsonApiRequests
             $this->assertStatus(422);
         };
     }
-
 
 	public function json($method, $uri, array $data = [], array $headers = [], $options = 0)
     {
