@@ -113,7 +113,7 @@ class ValidateJsonApiDocumentTest extends TestCase
                 'id' => 123,
                 'attributes' => ['key' => 'value'],
             ]
-        ])->dump()->assertJsonApiValidationErrors('data.id');
+        ])->assertJsonApiValidationErrors('data.id');
     }
 
     /** @test */

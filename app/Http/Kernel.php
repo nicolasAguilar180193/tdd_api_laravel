@@ -43,7 +43,8 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \Rakutentech\LaravelRequestDocs\LaravelRequestDocsMiddleware::class,
-            \App\Http\Middleware\ValidateJsonApiHeaders::class
+            \App\Http\Middleware\ValidateJsonApiHeaders::class,
+            \App\Http\Middleware\ValidateJsonApiDocument::class
         ],
     ];
 
