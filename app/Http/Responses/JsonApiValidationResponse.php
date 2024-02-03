@@ -10,6 +10,7 @@ class JsonApiValidationResponse extends JsonResponse
 	public function __construct(ValidationException $exception, int $status = 422)
 	{
         $data = $this->formatJsonApiErrors($exception);
+		
 		$headers = [
 			'Content-Type' => 'application/vnd.api+json'
 		];

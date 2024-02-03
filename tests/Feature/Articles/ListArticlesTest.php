@@ -37,7 +37,8 @@ class ListArticlesTest extends TestCase
         ]);
     }
 
-    public function test_can_fetch_all_articles(): void
+    /** @test */
+    public function can_fetch_all_articles(): void
     {
         $this->withoutExceptionHandling();
         $articles = Article::factory()->count(3)->create();

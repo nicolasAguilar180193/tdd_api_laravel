@@ -10,6 +10,8 @@ use Illuminate\Support\Str;
 
 trait MakesJsonApiRequests
 {
+    protected bool $formatJsonApiDocument = true;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -18,6 +20,11 @@ trait MakesJsonApiRequests
             'assertJsonApiValidationErrors',
             $this->assertJsonApiValidationErrors()
         );
+    }
+
+    protected function withoutJsonApiDocumentFormatting(): void
+    {
+        $this->formatJsonApiDocument = false;
     }
 
     protected function assertJsonApiValidationErrors(): Closure
@@ -68,7 +75,13 @@ trait MakesJsonApiRequests
     {
         $headers['Accept'] = 'application/vnd.api+json';
 
-        return parent::json($method, $uri, $data, $headers, $options);
+        if($this->formatJsonApiDocument) {
+            $formattedData['data']['type'] = (string) Str::of($uri)->after('/api/v1/');
+            
+            $formattedData['data']['attributes'] = $data;
+        }
+        
+        return parent::json($method, $uri, $formattedData ?? $data, $headers, $options);
     }
 
     public function postJson($uri, array $data = [], array $headers = [], $options = 0)
