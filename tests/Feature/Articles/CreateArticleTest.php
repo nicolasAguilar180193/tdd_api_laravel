@@ -16,16 +16,12 @@ class CreateArticleTest extends TestCase
     
     /** @test */
     public function can_create_article(): void
-    {
-        $this->withoutExceptionHandling();
-        
+    {        
         $response = $this->postJson(route('api.v1.articles.store'), [
             'title' => 'My new article',
             'slug' => 'my-new-article',
             'content' => 'My new article content'
-        ]);
-        
-        $response->assertCreated();
+        ])->assertCreated();
 
         $article = Article::first();
 

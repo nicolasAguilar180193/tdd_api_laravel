@@ -71,15 +71,27 @@ trait MakesJsonApiRequests
         };
     }
 
+    protected function getFormattedData($uri, $data): array 
+    {
+        $path = parse_url($uri)['path'];
+        $type = (string) Str::of($path)->after('/api/v1/')->before('/');
+        $id = (string) Str::of($path)->after($type)->replace('/', '');
+
+        return [
+            'data' => array_filter([
+                'type' => $type,
+                'id' => $id,
+                'attributes' => $data
+            ])
+        ];
+    }
+
 	public function json($method, $uri, array $data = [], array $headers = [], $options = 0)
     {
         $headers['Accept'] = 'application/vnd.api+json';
 
-        if($this->formatJsonApiDocument) {
-            $formattedData['data']['type'] = (string) Str::of($uri)->after('/api/v1/');
-            
-            $formattedData['data']['attributes'] = $data;
-        }
+        if($this->formatJsonApiDocument) 
+            $formattedData = $this->getFormattedData($uri, $data);
         
         return parent::json($method, $uri, $formattedData ?? $data, $headers, $options);
     }
